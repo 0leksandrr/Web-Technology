@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triangle Solver</title>
+</head>
+<body>
+<h1>Triangle Solver</h1>
+<p>Ця сторінка розв'язує прямокутний трикутник. Відкрийте консоль браузера для перегляду результатів.</p>
+
+<form id="triangleForm">
+    <label for="value1">Значення 1:</label>
+    <input type="number" id="value1" required><br><br>
+
+    <label for="type1">Тип 1:</label>
+    <select id="type1" required>
+        <option value="leg">Катет</option>
+        <option value="hypotenuse">Гіпотенуза</option>
+        <option value="adjacent angle">Прилеглий кут</option>
+        <option value="opposite angle">Протилежний кут</option>
+        <option value="angle">Гострий кут</option>
+    </select><br><br>
+
+    <label for="value2">Значення 2:</label>
+    <input type="number" id="value2" required><br><br>
+
+    <label for="type2">Тип 2:</label>
+    <select id="type2" required>
+        <option value="leg">Катет</option>
+        <option value="hypotenuse">Гіпотенуза</option>
+        <option value="adjacent angle">Прилеглий кут</option>
+        <option value="opposite angle">Протилежний кут</option>
+        <option value="angle">Гострий кут</option>
+    </select><br><br>
+
+    <button type="button" onclick="solveTriangle()">Розв'язати трикутник</button>
+</form>
+
+<script src="index.js"></script>
+
+<script>
+    function solveTriangle() {
+        const value1 = parseFloat(document.getElementById('value1').value);
+        const type1 = document.getElementById('type1').value;
+        const value2 = parseFloat(document.getElementById('value2').value);
+        const type2 = document.getElementById('type2').value;
+
+        const result = triangle(value1, type1, value2, type2);
+        console.log(result);
+    }
+</script>
+</body>
+</html>
