@@ -17,6 +17,8 @@
 
         if (uniqueLetters > 4) {
             speakHello(names[j]);
+        } else {
+            speakGoodBye(names[j]); 
         }
     }
 })();
