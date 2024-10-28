@@ -16,7 +16,7 @@
         var uniqueLetters = new Set(names[j].toLowerCase()).size;
 
         if (uniqueLetters > 4) {
-            console.log("Ім'я " + names[j] + " містить більше чотирьох унікальних літер.");
+            speakHello(names[j]);
         }
     }
 })();
