@@ -1,7 +1,5 @@
 let score = 0;
-let gameInterval;
 let squareTimeout;
-let gameTime = 30; // Час гри в секундах
 let isGameRunning = false;
 let squareSize = 50;
 let difficulty = 'normal'; // Default
@@ -11,53 +9,22 @@ let currentSquare = null; // Змінна для зберігання поточ
 // Вибір складності та кольору
 document.getElementById('difficultySelect').addEventListener('change', (e) => {
     difficulty = e.target.value;
-    adjustSquareSize();
 });
 document.getElementById('colorSelect').addEventListener('change', (e) => {
     squareColor = e.target.value;
 });
 
-function adjustSquareSize() {
-    switch (difficulty) {
-        case 'easy':
-            squareSize = 70; // Більший квадрат
-            break;
-        case 'normal':
-            squareSize = 50;
-            break;
-        case 'hard':
-            squareSize = 30; // Менший квадрат
-            break;
-        default:
-            squareSize = 50;
-    }
-}
-
 function startGame() {
     if (isGameRunning) return;
     isGameRunning = true;
     score = 0;
-    gameTime = 30;
     document.getElementById('score').textContent = `Бали: ${score}`;
-    document.getElementById('timer').textContent = `Час: ${gameTime}`;
 
     // Приховуємо стартове меню
     document.getElementById('difficulty').style.display = 'none';
     document.getElementById('gameArea').style.display = 'block';
 
-    adjustSquareSize();
-    gameInterval = setInterval(updateGameTime, 1000);
     spawnSquare(); // Спаунимо перший квадрат
-}
-
-function updateGameTime() {
-    if (gameTime <= 0) {
-        clearInterval(gameInterval);
-        endGame();
-    } else {
-        gameTime--;
-        document.getElementById('timer').textContent = `Час: ${gameTime}`;
-    }
 }
 
 function endGame() {
@@ -71,12 +38,13 @@ function endGame() {
         currentSquare = null;
     }
 
+    // Повертаємося до стартового меню
     document.getElementById('difficulty').style.display = 'block';
     document.getElementById('gameArea').style.display = 'none';
 }
 
 function spawnSquare() {
-    // Якщо гра не запущена або квадрат вже існує
+    // Якщо гра не запущена
     if (!isGameRunning) return;
 
     // Якщо існує попередній квадрат, видаляємо його
@@ -89,8 +57,6 @@ function spawnSquare() {
     const square = document.createElement('div');
     square.classList.add('square');
     square.style.backgroundColor = squareColor;
-    square.style.width = `${squareSize}px`;
-    square.style.height = `${squareSize}px`;
 
     // Встановлюємо випадкове місце на екрані
     const maxX = window.innerWidth - squareSize;
@@ -115,13 +81,9 @@ function spawnSquare() {
         spawnSquare(); // Спаунимо новий квадрат
     });
 
-    // Таймер для видалення квадрата, якщо не було кліку
+    // Таймер для програшу
     squareTimeout = setTimeout(() => {
-        if (currentSquare) {
-            currentSquare.remove();
-            currentSquare = null;
-            endGame(); // Завершити гру, якщо користувач не встиг
-        }
+        endGame(); // Гравець програє, якщо не встиг натиснути на квадрат
     }, getSquareTimeout());
 
     currentSquare = square; // Зберігаємо поточний квадрат
@@ -130,12 +92,12 @@ function spawnSquare() {
 function getSquareTimeout() {
     switch (difficulty) {
         case 'easy':
-            return 5000; // 5 секунд на квадрат
+            return 5000; // 5 секунд
         case 'normal':
-            return 2500; // 2.5 секунди на квадрат
+            return 3000; // 3 секунди
         case 'hard':
-            return 1000; // 1 секунда на квадрат
+            return 1000; // 1 секунда
         default:
-            return 2000;
+            return 3000;
     }
 }
