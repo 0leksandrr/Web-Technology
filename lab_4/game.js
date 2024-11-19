@@ -2,9 +2,10 @@ let score = 0;
 let squareTimeout;
 let isGameRunning = false;
 let squareSize = 50;
-let difficulty = 'normal'; // Default
-let squareColor = 'red'; // Default
-let currentSquare = null; // Змінна для зберігання поточного квадрата
+let difficulty = 'normal'; // За замовчуванням
+let squareColor = 'red'; // За замовчуванням
+let currentSquare = null; // Поточний квадрат
+let lastPosition = { x: window.innerWidth / 2, y: window.innerHeight / 2 }; // Початкова позиція
 
 // Вибір складності та кольору
 document.getElementById('difficultySelect').addEventListener('change', (e) => {
@@ -43,10 +44,9 @@ function endGame() {
 }
 
 function spawnSquare() {
-    // Якщо гра не запущена або квадрат вже існує
     if (!isGameRunning) return;
 
-    // Якщо існує попередній квадрат, видаляємо його
+    // Видалення попереднього квадрата
     if (currentSquare) {
         currentSquare.remove();
         currentSquare = null;
@@ -57,15 +57,10 @@ function spawnSquare() {
     square.classList.add('square');
     square.style.backgroundColor = squareColor;
 
-    // Встановлюємо випадкове місце на екрані
-    const maxX = window.innerWidth - squareSize;
-    const maxY = window.innerHeight - squareSize;
-
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
-
-    square.style.left = `${randomX}px`;
-    square.style.top = `${randomY}px`;
+    // Генерація нової позиції на основі рівня складності
+    const { x, y } = generateNewPosition();
+    square.style.left = `${x}px`;
+    square.style.top = `${y}px`;
 
     // Додаємо квадрат на сторінку
     document.getElementById('gameArea').appendChild(square);
@@ -74,20 +69,62 @@ function spawnSquare() {
     square.addEventListener('click', () => {
         score++;
         document.getElementById('score').textContent = `Бали: ${score}`;
-        square.remove(); // Видаляємо квадрат
-        currentSquare = null; // Очищаємо поточний квадрат
-        clearTimeout(squareTimeout); // Зупиняємо таймер видалення
-        spawnSquare(); // Спаунимо новий квадрат
+        square.remove();
+        currentSquare = null;
+        clearTimeout(squareTimeout);
+        spawnSquare();
     });
 
     // Таймер для видалення квадрата, якщо не було кліку
     squareTimeout = setTimeout(() => {
         if (currentSquare) {
-            endGame(); // Якщо не встигли натиснути — завершуємо гру
+            endGame(); // Завершення гри, якщо не встигли натиснути
         }
     }, getSquareTimeout());
 
     currentSquare = square; // Зберігаємо поточний квадрат
+}
+
+function generateNewPosition() {
+    const maxX = window.innerWidth - squareSize;
+    const maxY = window.innerHeight - squareSize;
+
+    let newX, newY;
+    const distanceRange = getDistanceRange();
+
+    do {
+        newX = Math.random() * maxX;
+        newY = Math.random() * maxY;
+
+        const distance = Math.sqrt(
+            Math.pow(newX - lastPosition.x, 2) + Math.pow(newY - lastPosition.y, 2)
+        );
+
+        // Перевірка відстані залежно від складності
+        if (
+            (difficulty === 'easy' && distance <= distanceRange.max && distance >= distanceRange.min) ||
+            (difficulty === 'normal' && distance >= distanceRange.min && distance <= distanceRange.max) ||
+            (difficulty === 'hard' && distance >= distanceRange.min)
+        ) {
+            break;
+        }
+    } while (true);
+
+    lastPosition = { x: newX, y: newY }; // Оновлюємо останню позицію
+    return { x: newX, y: newY };
+}
+
+function getDistanceRange() {
+    switch (difficulty) {
+        case 'easy':
+            return { min: 50, max: 150 }; // Квадрат з’являється неподалік
+        case 'normal':
+            return { min: 150, max: 300 }; // Середня відстань
+        case 'hard':
+            return { min: 300, max: Infinity }; // Квадрат з’являється далеко
+        default:
+            return { min: 150, max: 300 };
+    }
 }
 
 function getSquareTimeout() {
