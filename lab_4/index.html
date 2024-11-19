@@ -12,13 +12,19 @@
             padding: 0;
         }
         #gameArea {
+            display: none; /* Приховуємо поле для гри за замовчуванням */
             width: 100vw;
             height: 100vh;
             position: relative;
             background-color: #f0f0f0;
-            display: flex;
             justify-content: center;
             align-items: center;
+        }
+        #difficulty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20vh;
         }
         .square {
             width: 50px;
@@ -30,12 +36,6 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            font-size: 20px;
-        }
-        #timer {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             font-size: 20px;
         }
     </style>
@@ -61,7 +61,6 @@
 
     <div id="gameArea">
         <div id="score">Бали: 0</div>
-        <div id="timer">Час: 30</div>
     </div>
 
     <script src="game.js"></script>

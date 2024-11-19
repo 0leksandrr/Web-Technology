@@ -22,7 +22,7 @@ function startGame() {
 
     // Приховуємо стартове меню
     document.getElementById('difficulty').style.display = 'none';
-    document.getElementById('gameArea').style.display = 'block';
+    document.getElementById('gameArea').style.display = 'flex';
 
     spawnSquare(); // Спаунимо перший квадрат
 }
@@ -38,13 +38,12 @@ function endGame() {
         currentSquare = null;
     }
 
-    // Повертаємося до стартового меню
-    document.getElementById('difficulty').style.display = 'block';
+    document.getElementById('difficulty').style.display = 'flex';
     document.getElementById('gameArea').style.display = 'none';
 }
 
 function spawnSquare() {
-    // Якщо гра не запущена
+    // Якщо гра не запущена або квадрат вже існує
     if (!isGameRunning) return;
 
     // Якщо існує попередній квадрат, видаляємо його
@@ -81,9 +80,11 @@ function spawnSquare() {
         spawnSquare(); // Спаунимо новий квадрат
     });
 
-    // Таймер для програшу
+    // Таймер для видалення квадрата, якщо не було кліку
     squareTimeout = setTimeout(() => {
-        endGame(); // Гравець програє, якщо не встиг натиснути на квадрат
+        if (currentSquare) {
+            endGame(); // Якщо не встигли натиснути — завершуємо гру
+        }
     }, getSquareTimeout());
 
     currentSquare = square; // Зберігаємо поточний квадрат
@@ -92,12 +93,12 @@ function spawnSquare() {
 function getSquareTimeout() {
     switch (difficulty) {
         case 'easy':
-            return 5000; // 5 секунд
+            return 5000; // 5 секунд на квадрат
         case 'normal':
-            return 3000; // 3 секунди
+            return 2500; // 2.5 секунди на квадрат
         case 'hard':
-            return 1000; // 1 секунда
+            return 1000; // 1 секунда на квадрат
         default:
-            return 3000;
+            return 2500;
     }
 }
