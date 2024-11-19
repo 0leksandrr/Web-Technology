@@ -1,7 +1,7 @@
 let score = 0;
 let gameInterval;
 let squareTimeout;
-let gameTime = 30; // час гри в секундах
+let gameTime = 30; // Час гри в секундах
 let isGameRunning = false;
 let squareSize = 50;
 let difficulty = 'normal'; // Default
@@ -11,10 +11,27 @@ let currentSquare = null; // Змінна для зберігання поточ
 // Вибір складності та кольору
 document.getElementById('difficultySelect').addEventListener('change', (e) => {
     difficulty = e.target.value;
+    adjustSquareSize();
 });
 document.getElementById('colorSelect').addEventListener('change', (e) => {
     squareColor = e.target.value;
 });
+
+function adjustSquareSize() {
+    switch (difficulty) {
+        case 'easy':
+            squareSize = 70; // Більший квадрат
+            break;
+        case 'normal':
+            squareSize = 50;
+            break;
+        case 'hard':
+            squareSize = 30; // Менший квадрат
+            break;
+        default:
+            squareSize = 50;
+    }
+}
 
 function startGame() {
     if (isGameRunning) return;
@@ -28,6 +45,7 @@ function startGame() {
     document.getElementById('difficulty').style.display = 'none';
     document.getElementById('gameArea').style.display = 'block';
 
+    adjustSquareSize();
     gameInterval = setInterval(updateGameTime, 1000);
     spawnSquare(); // Спаунимо перший квадрат
 }
@@ -71,6 +89,8 @@ function spawnSquare() {
     const square = document.createElement('div');
     square.classList.add('square');
     square.style.backgroundColor = squareColor;
+    square.style.width = `${squareSize}px`;
+    square.style.height = `${squareSize}px`;
 
     // Встановлюємо випадкове місце на екрані
     const maxX = window.innerWidth - squareSize;
@@ -100,7 +120,7 @@ function spawnSquare() {
         if (currentSquare) {
             currentSquare.remove();
             currentSquare = null;
-            spawnSquare(); // Спаунимо новий квадрат
+            endGame(); // Завершити гру, якщо користувач не встиг
         }
     }, getSquareTimeout());
 
@@ -110,9 +130,9 @@ function spawnSquare() {
 function getSquareTimeout() {
     switch (difficulty) {
         case 'easy':
-            return 3000; // 3 секунди на квадрат
+            return 5000; // 5 секунд на квадрат
         case 'normal':
-            return 2000; // 2 секунди на квадрат
+            return 2500; // 2.5 секунди на квадрат
         case 'hard':
             return 1000; // 1 секунда на квадрат
         default:
