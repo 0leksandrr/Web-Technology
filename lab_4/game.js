@@ -45,12 +45,28 @@ function updateGameTime() {
 function endGame() {
     alert(`Гра завершена! Ваш результат: ${score} балів`);
     isGameRunning = false;
+
+    // Очистити всі активні таймери та квадрати
+    clearTimeout(squareTimeout);
+    if (currentSquare) {
+        currentSquare.remove();
+        currentSquare = null;
+    }
+
     document.getElementById('difficulty').style.display = 'block';
     document.getElementById('gameArea').style.display = 'none';
 }
 
 function spawnSquare() {
-    if (!isGameRunning || currentSquare) return; // Якщо гра не запущена або квадрат вже є
+    // Якщо гра не запущена або квадрат вже існує
+    if (!isGameRunning) return;
+
+    // Якщо існує попередній квадрат, видаляємо його
+    if (currentSquare) {
+        currentSquare.remove();
+        currentSquare = null;
+        clearTimeout(squareTimeout);
+    }
 
     const square = document.createElement('div');
     square.classList.add('square');
@@ -75,14 +91,17 @@ function spawnSquare() {
         document.getElementById('score').textContent = `Бали: ${score}`;
         square.remove(); // Видаляємо квадрат
         currentSquare = null; // Очищаємо поточний квадрат
+        clearTimeout(squareTimeout); // Зупиняємо таймер видалення
         spawnSquare(); // Спаунимо новий квадрат
     });
 
     // Таймер для видалення квадрата, якщо не було кліку
     squareTimeout = setTimeout(() => {
-        square.remove(); // Видаляємо квадрат
-        currentSquare = null; // Очищаємо поточний квадрат
-        spawnSquare(); // Спаунимо новий квадрат
+        if (currentSquare) {
+            currentSquare.remove();
+            currentSquare = null;
+            spawnSquare(); // Спаунимо новий квадрат
+        }
     }, getSquareTimeout());
 
     currentSquare = square; // Зберігаємо поточний квадрат
