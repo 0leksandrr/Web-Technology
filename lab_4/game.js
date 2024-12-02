@@ -43,6 +43,8 @@ function endGame() {
     document.getElementById('gameArea').style.display = 'none';
 }
 
+let countdownInterval;
+
 function spawnSquare() {
     if (!isGameRunning) return;
 
@@ -51,38 +53,46 @@ function spawnSquare() {
         currentSquare.remove();
         currentSquare = null;
         clearTimeout(squareTimeout);
+        clearInterval(countdownInterval);
     }
 
     const square = document.createElement('div');
     square.classList.add('square');
     square.style.backgroundColor = squareColor;
 
-    // Генерація нової позиції на основі рівня складності
     const { x, y } = generateNewPosition();
     square.style.left = `${x}px`;
     square.style.top = `${y}px`;
-
-    // Додаємо квадрат на сторінку
     document.getElementById('gameArea').appendChild(square);
 
-    // Клік на квадрат
+    let remainingTime = getSquareTimeout() / 1000;
+    document.getElementById('timer').textContent = `Час: ${remainingTime} сек`;
+
+    countdownInterval = setInterval(() => {
+        remainingTime--;
+        document.getElementById('timer').textContent = `Час: ${remainingTime} сек`;
+        if (remainingTime <= 0) {
+            clearInterval(countdownInterval);
+        }
+    }, 1000);
+
     square.addEventListener('click', () => {
         score++;
         document.getElementById('score').textContent = `Бали: ${score}`;
         square.remove();
         currentSquare = null;
         clearTimeout(squareTimeout);
+        clearInterval(countdownInterval);
         spawnSquare();
     });
 
-    // Таймер для видалення квадрата, якщо не було кліку
     squareTimeout = setTimeout(() => {
         if (currentSquare) {
-            endGame(); // Завершення гри, якщо не встигли натиснути
+            endGame();
         }
     }, getSquareTimeout());
 
-    currentSquare = square; // Зберігаємо поточний квадрат
+    currentSquare = square;
 }
 
 function generateNewPosition() {
