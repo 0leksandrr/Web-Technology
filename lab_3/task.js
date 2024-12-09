@@ -192,3 +192,56 @@ let parallelogram = new Parallelogram(5, 10, 60, 120);
 parallelogram.length();
 parallelogram.square();
 parallelogram.info();
+
+
+function PiMultiplier(factor) {
+    return function() {
+        return Math.PI * factor;
+    };
+}
+
+// Створення функцій
+const multiplyBy2 = PiMultiplier(2);
+const multiplyBy3_2 = PiMultiplier(3 / 2);
+const divideBy2 = PiMultiplier(1 / 2);
+
+// Демонстрація роботи
+console.log("π * 2 =", multiplyBy2());
+console.log("π * 3/2 =", multiplyBy3_2());
+console.log("π / 2 =", divideBy2());
+
+function Painter(color) {
+    return function(obj) {
+        if (obj.type) {
+            console.log(`${color} ${obj.type}`);
+        } else {
+            console.log("No ‘type’ property occurred!");
+        }
+    };
+}
+
+// Створення функцій
+const PaintBlue = Painter("Blue");
+const PaintRed = Painter("Red");
+const PaintYellow = Painter("Yellow");
+
+// Тестові об'єкти
+const object1 = { maxSpeed: 280, type: "Sportcar", color: "magenta"};
+const object2 = { loadCapacity: 2400, type: "Truck", avgSpeed: 90};
+const object3 = { maxSpeed: 180, color: "purple", isCar: true };
+
+// Демонстрація роботи
+console.log("Object 1:");
+PaintBlue(object1);
+PaintRed(object1);
+PaintYellow(object1);
+
+console.log("\nObject 2:");
+PaintBlue(object2);
+PaintRed(object2);
+PaintYellow(object2);
+
+console.log("\nObject 3:");
+PaintBlue(object3);
+PaintRed(object3);
+PaintYellow(object3);
